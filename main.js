@@ -1,52 +1,26 @@
-// ?Bizning state tashqaridan keladigan parametrlarga qaram bo'lmasligi kerak "clearFunck" - tozaFunksiya bo'lishi kerak
+import { createStore, bindActionCreators } from "redux";
+import reducer from "./reducer";
+import * as actions from "./actions";
 
-import { createStore } from "redux";
-
-// initialize value
-// Bu yerda biz objectni faqatgina count qiymatini o'zgartiramiz, qolgan qismini copy qilib olamiz.
-const value = { count: 0, firstName: "John", lastName: "Smith" };
-
-const reducer = (state = value, { type, payload }) => {
-  switch (type) {
-    case "INC":
-      return {
-        ...state,
-        res: state.count + 1,
-      };
-    case "DECR":
-      return {
-        ...state,
-        res: state.count - 1,
-      };
-    case "RND":
-      return {
-        ...state,
-        res: payload,
-      };
-  }
-};
-
+// Redux storeni yaratish
 const store = createStore(reducer);
+const { dispatch, getState, subscribe } = store; // store dan dispatch, getState va subscribe funksiyalarini olish
 
+// UI ni yangilash funksiyasi
 const updateUI = () => {
-  document.querySelector("#counter").textContent = store.getState().res;
-  console.log(store.getState());
+  document.querySelector("#counter").textContent = getState().count; // state dan count qiymatini olib, #counter elementiga o'rnatish
 };
 
-store.subscribe(updateUI);
+// State o'zgarganda UI ni yangilash uchun subscribe qilish
+subscribe(updateUI);
 
-const inc = () => ({ type: "INC" });
-const decr = () => ({ type: "DECR" });
-const rnd = value => ({ type: "RND", payload: value });
+// Action creatorlarni dispatch bilan bog'lash
+const { decr, inc, rnd } = bindActionCreators(actions, dispatch);
 
-document.querySelector("#inc").addEventListener("click", () => {
-  store.dispatch(inc());
-});
-document.querySelector("#decr").addEventListener("click", () => {
-  store.dispatch(decr());
-});
-
+// Event listenerlarni qo'shish
+document.querySelector("#inc").addEventListener("click", inc);
+document.querySelector("#decr").addEventListener("click", decr);
 document.querySelector("#rnd").addEventListener("click", () => {
   const random = Math.floor(Math.random() * 100);
-  store.dispatch(rnd(random));
+  dispatch(rnd(random)); // rnd action creatorini tasodifiy qiymat bilan dispatch qilish
 });
