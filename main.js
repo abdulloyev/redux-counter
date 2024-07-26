@@ -1,24 +1,35 @@
+// ?Bizning state tashqaridan keladigan parametrlarga qaram bo'lmasligi kerak "clearFunck" - tozaFunksiya bo'lishi kerak
+
 import { createStore } from "redux";
 
 // initialize value
-const value = 0;
+// Bu yerda biz objectni faqatgina count qiymatini o'zgartiramiz, qolgan qismini copy qilib olamiz.
+const value = { count: 0, firstName: "John", lastName: "Smith" };
 
 const reducer = (state = value, { type, payload }) => {
   switch (type) {
     case "INC":
-      return state + 1;
+      return {
+        ...state,
+        res: state.count + 1,
+      };
     case "DECR":
-      return state - 1;
+      return {
+        ...state,
+        res: state.count - 1,
+      };
     case "RND":
-      return state + payload;
-    default:
+      return {
+        ...state,
+        res: payload,
+      };
   }
 };
 
 const store = createStore(reducer);
 
 const updateUI = () => {
-  document.querySelector("#counter").textContent = store.getState();
+  document.querySelector("#counter").textContent = store.getState().res;
   console.log(store.getState());
 };
 
