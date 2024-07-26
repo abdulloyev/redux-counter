@@ -24,14 +24,18 @@ const updateUI = () => {
 
 store.subscribe(updateUI);
 
+const inc = () => ({ type: "INC" });
+const decr = () => ({ type: "DECR" });
+const rnd = value => ({ type: "RND", payload: value });
+
 document.querySelector("#inc").addEventListener("click", () => {
-  store.dispatch({ type: "INC" });
+  store.dispatch(inc());
 });
 document.querySelector("#decr").addEventListener("click", () => {
-  store.dispatch({ type: "DECR" });
+  store.dispatch(decr());
 });
 
 document.querySelector("#rnd").addEventListener("click", () => {
   const random = Math.floor(Math.random() * 100);
-  store.dispatch({ type: "RND", payload: random });
+  store.dispatch(rnd(random));
 });
