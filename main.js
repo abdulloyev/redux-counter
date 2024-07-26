@@ -3,29 +3,35 @@ import { createStore } from "redux";
 // initialize value
 const value = 0;
 
-const reducer = (state = 0, action) => {
-  switch (action.type) {
+const reducer = (state = value, { type, payload }) => {
+  switch (type) {
     case "INC":
       return state + 1;
     case "DECR":
       return state - 1;
+    case "RND":
+      return state + payload;
+    default:
   }
 };
 
 const store = createStore(reducer);
 
-store.subscribe(() => {
-  // *INFO: result console.log
-
+const updateUI = () => {
+  document.querySelector("#counter").textContent = store.getState();
   console.log(store.getState());
+};
+
+store.subscribe(updateUI);
+
+document.querySelector("#inc").addEventListener("click", () => {
+  store.dispatch({ type: "INC" });
+});
+document.querySelector("#decr").addEventListener("click", () => {
+  store.dispatch({ type: "DECR" });
 });
 
-store.dispatch({ type: "INC" }); // state + 1
-store.dispatch({ type: "INC" }); // state + 1
-store.dispatch({ type: "INC" }); // state + 1
-store.dispatch({ type: "INC" }); // state + 1
-store.dispatch({ type: "DECR" }); // state - 1
-store.dispatch({ type: "DECR" }); // state - 1
-
-// *INFO: value buyerda o'zgarmaydi
-console.log("Value: " + value);
+document.querySelector("#rnd").addEventListener("click", () => {
+  const random = Math.floor(Math.random() * 100);
+  store.dispatch({ type: "RND", payload: random });
+});
